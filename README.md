@@ -1,15 +1,16 @@
 # fresh-promsie
 
-
-```
-promise = new Promise()
-```
+promise that keeps itself fresh
 
 ```js
-Cache = require("fresh-promise");
-cachedResult = new Cache(3600, function() {
-    // returns a promise
+var FreshPromise = require("fresh-promise");
+
+var cached = new FreshPromise(5000, function() {
+    return Promise.resolve(Math.random());
 });
 
-cachedResult.then(...);
+cached.then(...);
+cached.then(...);  // should be the same
+
+sleep(5000).then(...);  // promise should be updated
 ```
