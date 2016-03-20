@@ -1,21 +1,23 @@
-
 class Cache
 
     constructor: (@ttl, @source)->
-        reset = =>
-            @promise = null
-            setTimeout reset, @ttl if @ttl
-        setTimeout reset, @ttl
 
-    then: (args...)->
-        @promise = @source() unless @promise
-        @promise.then args...
+    then: (cb)->
+        if @promise
+            @promise.then cb
+        else
+            wait = (resolve)=>
+                @source()
+                .catch => wait resolve
+                .then (data)=>
+                    setTimeout (=> @promise = null), @ttl if @ttl
+                    resolve data
+            @promise = new Promise wait
+            @promise.then cb
 
-    catch: (args...)->
-        @promise = @source() unless @promise
-        @promise.catch args...
+    catch: (cb)-> this
 
     destroy: ->
-        @ttl = 0
-    
+        @ttl = null
+
 module.exports = Cache

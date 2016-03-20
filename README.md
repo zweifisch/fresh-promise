@@ -8,7 +8,7 @@ promise that keeps itself fresh
 ```js
 var FreshPromise = require("fresh-promise");
 
-var cached = new FreshPromise(5000, function() {
+var cached = new FreshPromise(5000/*ttl*/, function() {
     return Promise.resolve(Math.random());
 });
 
